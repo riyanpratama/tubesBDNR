@@ -1,0 +1,30 @@
+@relation movie_dataset
+
+@attribute year numeric
+@attribute vote numeric
+@attribute categories {"Korean Drama", "Action West"}
+
+@data
+2012, 2174, "Korean Drama"
+2009, 313, "Korean Drama"
+2014, 6277, "Korean Drama"
+2011, 3914, "Korean Drama"
+2007, 1689, "Korean Drama"
+2014, 8828, "Korean Drama"
+2012, 13, "Korean Drama"
+2014, 2884, "Korean Drama"
+2004, 1434, "Korean Drama"
+2011, 3736, "Korean Drama"
+2014, 2335, "Korean Drama"
+2011, 2094, "Korean Drama"
+2012, 1959, "Korean Drama"
+2013, 207, "Korean Drama"
+2010, 10, "Korean Drama"
+2010, 2569, "Korean Drama"
+2013, 32, "Korean Drama"
+2006, 2249, "Korean Drama"
+2012, 2750, "Korean Drama"
+2010, 3614, "Korean Drama"
+2013, 20235, "Korean Drama"
+2013, 25772, "Korean Drama"
+2009, 4653, "Korean Drama"
