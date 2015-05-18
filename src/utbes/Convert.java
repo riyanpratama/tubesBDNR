@@ -28,7 +28,7 @@ import org.graphstream.stream.file.FileSourceDGS;
  */
 public class Convert {
 
-    Graph Gstream = null;
+     Graph Gstream = null;
     Graphs G;
     private String styleSheet = "node { fill-color : black;}node.marked {fill-color:red;}";
     private String betweness;
@@ -40,32 +40,39 @@ public class Convert {
         this.Gstream = new SingleGraph("Graph");
     }
 
-      public void run() {
+    public void run() {
         int temp = 0;
         for (Node i : G.getNode()) {
             Gstream.addNode(i.getInfo());
         }
-         addEdges();
+        addEdges();
     }
-      
-       //tambahkan edge
+
+    public void Run() {
+        int temp = 0;
+        for (Node i : G.getNode()) {
+            Gstream.addNode(i.getInfo());
+        }
+    }
+
+    //tambahkan edge
     public void addEdges() {
-        int temp=0;
+        int temp = 0;
         for (int i = 0; i < G.getSizeNode(); i++) {
             Node f = G.cariNode(G.getNode().get(i).getInfo());
             //iterasi tiap edge untuk mendapatkan hubungan antar node 
             for (Edge j : f.getArrayEdge()) {
                 //jika status node1 dan node2 false maka hubungkan node tersebut
                 if (!f.getStatus() && !j.getNode().getStatus()) {
-                   Gstream.addEdge(j.getInfo()+"-"+temp, Gstream.getNode(f.getInfo()), Gstream.getNode(j.getNode().getInfo()));
-                   temp++;
-                }     
+                    Gstream.addEdge(j.getInfo() + "-" + temp, Gstream.getNode(f.getInfo()), Gstream.getNode(j.getNode().getInfo()));
+                    temp++;
+                }
             }
             f.setStatus(true);
         }
         resetStatus();
     }
-    
+
     //reset status tiap node ke awal
     public void resetStatus() {
         for (Node f : G.getNode()) {
@@ -73,85 +80,112 @@ public class Convert {
         }
     }
 
-    //ga dipake, untuk parsing
-    public String getMM(String info) {
-        int temp = 0;
-        for (int a = 0; a < info.length(); a++) {
-            if (info.charAt(a) == '=') {
-                temp = a + 1;
-            } else if (info.charAt(a) == ',') {
-                return info.substring(temp, a);
+    public void D_Aktor() {
+        for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
+            n.addAttribute("ui.hide");
+            for (org.graphstream.graph.Edge e : n.getEachEdge()) {
+                e.addAttribute("ui.hide");
             }
+            for (Node i : G.getNode()) {
+                if (i.getLabel().contains("aktor")) {
+                    if (i.getInfo().contains(n.getId())) {
+                        n.removeAttribute("ui.hide");
+                        n.addAttribute("ui.style", "fill-color:rgb(0,188,200);");
+                    }
+                }
+            }
+            n.addAttribute("ui.label", n.getId());
         }
-        return null;
     }
 
-    public void displayG(String ceklis) {
+    public void D_Movie() {
+        for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
+            n.addAttribute("ui.hide");
+            for (org.graphstream.graph.Edge e : n.getEachEdge()) {
+                e.addAttribute("ui.hide");
+            }
+            for (Node i : G.getNode()) {
+                if (i.getLabel().contains("movie")) {
+                    if (i.getInfo().contains(n.getId())) {
+                        n.removeAttribute("ui.hide");
+                        n.addAttribute("ui.style", "fill-color:rgb(255,188,200);");
+                    }
+                }
+            }
+            n.addAttribute("ui.label", n.getId());
+        }
+
+    }
+
+    public void D_Highlight(String ceklis) {
+        for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
+            for (Node i : G.getNode()) {
+                if (i.getLabel().contains("aktor")) {
+                    if (i.getInfo().contains(n.getId())) {
+                        n.addAttribute("ui.style", "fill-color:rgb(0,188,200);");
+                    }
+                }
+                if (i.getInfo().contains(ceklis.substring(10))) {
+                    if (i.getInfo().contains(n.getId())) {
+                        n.addAttribute("ui.style", "fill-color:rgb(250,0,0);");
+                    }
+                }
+            }
+            n.addAttribute("ui.label", n.getId());
+        }
+    }
+
+    public void D_All() {
+        for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
+            for (Node i : G.getNode()) {
+                if (i.getLabel().contains("aktor")) {
+                    if (i.getInfo().contains(n.getId())) {
+                        n.addAttribute("ui.style", "fill-color:rgb(0,188,200);");
+                    }
+                }
+            }
+            n.addAttribute("ui.label", n.getId());
+        }
+    }
+
+    public void D_Relasi(String info){
+          for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
+            for (Node i : G.getNode()) {
+                if (i.getLabel().contains("aktor")) {
+                    if (i.getInfo().contains(n.getId())) {
+                        n.addAttribute("ui.style", "fill-color:rgb(0,188,200);");
+                    }
+                }
+                if (i.getInfo().contains(info.substring(10))) {
+                    if (i.getInfo().contains(n.getId())) {
+                        n.addAttribute("ui.style", "fill-color:rgb(250,0,0);");
+                    }
+                }
+            }
+            n.addAttribute("ui.label", n.getId());
+        }
+    }
+    
+    public View displayG(String ceklis) {
         if (ceklis.contains("aktor")) {
-            for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
-                n.addAttribute("ui.hide");
-                for (org.graphstream.graph.Edge e : n.getEachEdge()) {
-                    e.addAttribute("ui.hide");
-                }
-                for (Node i : G.getNode()) {
-                    if (i.getLabel().contains("aktor")) {
-                        if (i.getInfo().contains(n.getId())) {
-                            n.removeAttribute("ui.hide");
-                            n.addAttribute("ui.style", "fill-color:rgb(0,188,200);");
-                        }
-                    }
-                }
-                n.addAttribute("ui.label", n.getId());
-            }
+            D_Aktor();
         } else if (ceklis.contains("movie")) {
-            for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
-                n.addAttribute("ui.hide");
-                for (org.graphstream.graph.Edge e : n.getEachEdge()) {
-                    e.addAttribute("ui.hide");
-                }
-                for (Node i : G.getNode()) {
-                    if (i.getLabel().contains("movie")) {
-                        if (i.getInfo().contains(n.getId())) {
-                            n.removeAttribute("ui.hide");
-                            n.addAttribute("ui.style", "fill-color:rgb(255,188,200);");
-                        }
-                    }
-                }
-                n.addAttribute("ui.label", n.getId());
-            }
-
+            D_Movie();
         } else if (ceklis.contains("highlight")) {
-            for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
-                for (Node i : G.getNode()) {
-                    if (i.getLabel().contains("aktor")) {
-                        if (i.getInfo().contains(n.getId())) {
-                            n.addAttribute("ui.style", "fill-color:rgb(0,188,200);");
-                        }
-                    }
-                    if (i.getInfo().contains(ceklis.substring(10))) {
-                        if (i.getInfo().contains(n.getId())) {
-                            n.addAttribute("ui.style", "fill-color:rgb(250,0,0);");
-                        }
-                    }
-                }
-                n.addAttribute("ui.label", n.getId());
-            }
+            D_Highlight(ceklis);
+        } else if (ceklis.contains("-")) {
+            D_Relasi(ceklis.substring(1));
         } else {
-            for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
-                for (Node i : G.getNode()) {
-                    if (i.getLabel().contains("aktor")) {
-                        if (i.getInfo().contains(n.getId())) {
-                            n.addAttribute("ui.style", "fill-color:rgb(0,188,200);");
-                        }
-                    }
-                }
-                n.addAttribute("ui.label", n.getId());
-            }
+            D_All();
         }
-        Gstream.display();
+
+        Viewer viewer = new Viewer(Gstream, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        viewer.enableAutoLayout();
+        View view = viewer.addDefaultView(false);
+        return view;
     }
 
-     public String getBetweness() {
+    public String getBetweness() {
         return this.betweness;
     }
 
@@ -166,7 +200,7 @@ public class Convert {
     public void addNOde(String s) {
         Gstream.addNode(s);
     }
-    
+
     public ArrayList<String> Ecentricity() {
         ArrayList<String> sss = new ArrayList<>();
         APSP apsp = new APSP();
@@ -214,7 +248,7 @@ public class Convert {
         cc.init(Gstream);
         cc.compute();
         for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
-           sss.add(n.getId() + " : " + n.getAttribute("closeness"));
+            sss.add(n.getId() + " : " + n.getAttribute("closeness"));
             double s = n.getAttribute("closeness");
             if (max < s) {
                 max = s;
@@ -228,5 +262,6 @@ public class Convert {
     public double getDIameter() {
         return Toolkit.diameter(Gstream);
     }
+
 
 }
