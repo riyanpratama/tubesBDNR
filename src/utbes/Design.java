@@ -26,18 +26,17 @@ import weka.core.Instances;
 public class Design extends javax.swing.JFrame {
 
     CardLayout c;
-    Graphs G, P;
+    Graphs G;
     ImportDataset id;
     Convert Gstream;
     int ing = 0;
-
+    JFrame frame=new JFrame();
     /**
      * Creates new form Design
      */
     public Design() {
         initComponents();
         G = new Graphs();
-        P = new Graphs();
         reset();
         DefaultTableModel dddd = (DefaultTableModel) jTable4.getModel();
         dddd.setRowCount(500);
@@ -957,161 +956,369 @@ public class Design extends javax.swing.JFrame {
     }
 
     public void query(String query, Graphs Q) {
+         frame.show(false);
+        frame = new JFrame();
+        frame.setSize(950, 540);
+        frame.setLocation(30, 85);
+        frame.setAlwaysOnTop(true);
+        frame.setResizable(false);
         Node n = null;
         int temp = 0;
         if (query != null || !query.contains("Enter")) {
             if (query.contains("create node")) {
-                for (int i = 0; i < query.length(); i++) {
-                    if (query.charAt(i) == '{') {
-                        temp = i + 1;
-                    } else if (query.charAt(i) == '}') {
-                        Node o = new Node(query.substring(temp, i));
-                        Q.addNode(o);
-                        jTextArea2.setText("Insert Node Success \n" + o.getInfo());
-                        jTextArea4.setText("Insert Node Success \n" + o.getInfo());
-                        System.out.println(Q.view());
-                        Gstream = new Convert(Q);
-                        Gstream.run();
-                        Gstream.displayG("");
-
-                    }
-                }
+                Q_CreateNode(Q, query);
             } else if (query.contains("match") && !query.contains("create")) {
                 if (query.contains("where")) {
-                    if (query.contains("-")) {
-                        for (int i = 0; i < query.length(); i++) {
-                            if (query.charAt(i) == '{') {
-                                temp = i + 1;
-                            } else if (query.charAt(i) == '}') {
-                                if (Q.cariNode(query.substring(temp, i)) != null) {
-                                    n = Q.cariNode(query.substring(temp, i));
-                                    if (n != null) {
-                                        Graphs E = new Graphs();
-                                        E.addNode(n);
-                                        for (Edge e : n.getArrayEdge()) {
-                                            E.addNode(e.getNode());
-                                            e.getNode().deleteEdge();
-                                        }
-                                        Gstream = new Convert(E);
-                                        Gstream.run();
-                                        Gstream.displayG("");
-                                        jTextArea2.setText(n.getInfo());
-                                        jTextArea4.setText(n.getInfo());
-
-                                    }
-                                } else {
-                                    jTextArea2.setText("not Found");
-                                    jTextArea4.setText("not Found");
-                                }
-                            }
-                        }
+                    if (query.contains("-") && !query.contains("=")) {
+                        Q_Complex(Q, query);
+                    } else if (query.contains("-") && query.contains("=")) {
+                        System.out.println("k");
+                        Q_MatchRelasi(Q, query);
                     } else {
-                        for (int i = 0; i < query.length(); i++) {
-                            if (query.charAt(i) == '{') {
-                                temp = i + 1;
-                            } else if (query.charAt(i) == '}') {
-                                if (Q.cariNode(query.substring(temp, i)) != null) {
-                                    n = Q.cariNode(query.substring(temp, i));
-                                    if (n != null) {
-                                        Gstream = new Convert(Q);
-                                        Gstream.run();
-                                        Gstream.displayG("highlight " + n.getInfo());
-                                        jTextArea2.setText(n.toString());
-                                        jTextArea4.setText(n.toString());
-
-                                    }
-                                } else {
-                                    jTextArea2.setText("not Found");
-                                    jTextArea4.setText("not Found");
-
-                                }
-                            }
-                        }
+                        Q_Highlight(Q, query);
                     }
+                } else if (query.contains(">") && !query.contains("where")) {
+                    Q_Dephth(Q, query);
                 } else {
                     if (query.contains("aktor")) {
                         Gstream = new Convert(Q);
                         Gstream.run();
-                        Gstream.displayG("aktor");
+                        View view = Gstream.displayG("aktor");
+                        frame.add(view);
+                        frame.show();
+
                     } else if (query.contains("movie")) {
                         Gstream = new Convert(Q);
                         Gstream.run();
-                        Gstream.displayG("movie");
+                        View view = Gstream.displayG("movie");
+                        frame.add(view);
+                        frame.show();
+
                     }
                 }
             } else if (query.contains("create edge")) {
-                String n1 = "", n2 = "", info = "";
-                int t = 0;
-                for (int i = 0; i < query.length(); i++) {
-                    if (query.charAt(i) == '{') {
-                        temp = i + 1;
-                    } else if (query.charAt(i) == '}') {
-                        if (t == 0) {
-                            n1 = query.substring(temp, i);
-                            t++;
-                        } else {
-                            n2 = query.substring(temp, i);
-                        }
-                    } else if (query.charAt(i) == '[') {
-                        temp = i + 1;
-                    } else if (query.charAt(i) == ']') {
-                        info = query.substring(temp, i);
-                    }
-                }
-                Node a = Q.cariNode(n1);
-
-                Node b = Q.cariNode(n2);
-                //System.out.println(b.getInfo());
-                if (a != null && b != null) {
-                    Q.addEdge(info, n1, n2);
-                    jTextArea2.setText("insert node success");
-                    jTextArea4.setText("insert node success");
-
-                    Gstream = new Convert(Q);
-                    Gstream.run();
-                    Gstream.displayG("");
-
-                } else {
-                    jTextArea2.setText("Node yang dimaksud tidak ditemukan");
-                    jTextArea4.setText("Node yang dimaksud tidak ditemukan");
-
-                }
-            } else if (jTextArea1.getText().contains("Open") || (jTextArea3.getText().contains("Open"))) {
-                try {
-                    // TODO add your handling code here:
-                    if (ing == 1) {
-                        id = new ImportDataset(jTextArea3.getText().substring(5));
-                    } else {
-                        id = new ImportDataset(jTextArea1.getText().substring(5));
-                    }
-                } catch (IOException ex) {
-                    Logger.getLogger(Design.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (BiffException ex) {
-                    Logger.getLogger(Design.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                id.Run(Q);
-                jTextArea2.setText("Success");
-                jTextArea4.setText("Node yang dimaksud tidak ditemukan");
-
-                jTextArea2.setText(Q.view());
-                jTextArea4.setText(Q.view());
-
-                System.out.println(Q.view());
-                Gstream = new Convert(Q);
-                Gstream.run();
-                Gstream.displayG("");
-                //analisis();
-                //  setText();
+                Q_CreateEdge(Q, query);
+            } else if (jTextArea1.getText().contains("Open")) {
+                Q_Open(Q);
             } else if (jTextArea1.getText().contains("return all")) {
-                Gstream = new Convert(Q);
-                Gstream.run();
-                Gstream.displayG("");
-                jTextArea2.setText(Q.view());
-                jTextArea4.setText(Q.view());
+                Q_viewAll(Q);
+            }
+        }
+    }
+    
+    public void Q_Dephth(Graphs Q, String query) {
+        int temp = 0;
+        Graphs Y = new Graphs();
+        ArrayList<String> att = new ArrayList<>();
+        ArrayList<Node> aNode = new ArrayList<>();
+        for (int i = 0; i < query.length(); i++) {
+            if (query.charAt(i) == '{') {
+                temp = i + 1;
+            } else if (query.charAt(i) == '}') {
+                att.add(query.substring(temp, i));
+            }
+        }
+        for (String y : att) {
+            Node a = Q.cariNode(y);
+            if (a != null) {
+                aNode.add(a);
+            } else {
+                try {
+                    throw new Exception();
+                } catch (Exception ex) {
+                    System.out.println("Node tak ditemukan ");
+                }
+                aNode.clear();
+                break;
+            }
+        }
+        if (!aNode.isEmpty()) {
+            for (int i = 0; i < aNode.size(); i++) {
+                Node a = aNode.get(i);
+                Node abaru = new Node(a.getInfo());
+                abaru.Attribut(a.to_attribut());
+                if (Y.cariNode(a.getInfo()) == null) {
+                    Y.addNode(abaru);
+                }
+
+                for (Edge e : a.getArrayEdge()) {
+                    Node c = new Node(e.getNode().getInfo());
+                    c.Attribut(e.getNode().to_attribut());
+                    if (i + 1 != aNode.size()) {
+                        Node b = aNode.get(i + 1);
+                        Node bbaru = new Node(b.getInfo());
+                        bbaru.Attribut(b.to_attribut());
+                        if (e.getNode().getInfo().contains(b.getInfo())) {
+                            if (Y.cariNode(b.getInfo()) == null) {
+                                Y.addNode(bbaru);
+                                Y.addEdge(e.getInfo(), a.getInfo(), b.getInfo());
+                            }
+
+                        } else if (!e.getNode().getInfo().contains(b.getInfo())) {
+                            if (Y.cariNode(c.getInfo()) == null) {
+                                Y.addNode(c);
+                                Y.addEdge(e.getInfo(), a.getInfo(), c.getInfo());
+                            }
+                        }
+                    } else {
+                        if (Y.cariNode(c.getInfo()) == null) {
+                            Y.addNode(c);
+                            Y.addEdge(e.getInfo(), a.getInfo(), c.getInfo());
+                        }
+                    }
+                }
+            }
+            Gstream = new Convert(Y);
+            Gstream.run();
+            View view = Gstream.displayG("");
+            frame.add(view);
+            frame.show();
+            jTextArea2.setText(Y.view());
+        }
+
+    }
+
+    public void Q_Highlight(Graphs Q, String query) {
+        int temp = 0;
+        Node n;
+        for (int i = 0; i < query.length(); i++) {
+            if (query.charAt(i) == '{') {
+                temp = i + 1;
+            } else if (query.charAt(i) == '}') {
+                if (Q.cariNode(query.substring(temp, i)) != null) {
+                    n = Q.cariNode(query.substring(temp, i));
+                    if (n != null) {
+                        Gstream = new Convert(Q);
+                        Gstream.run();
+                        View view = Gstream.displayG("highlight " + n.getInfo());
+                        frame.add(view);
+                        frame.show();
+                        jTextArea2.setText(n.toString());
+                    }
+                } else {
+                    jTextArea2.setText("not Found");
+
+                }
+            }
+        }
+    }
+
+    public void Q_Complex(Graphs Q, String query) {
+        int temp = 0;
+        int c = 0;
+        ArrayList<String> Yes = new ArrayList<>();
+        ArrayList<String> No = new ArrayList<>();
+        String quer = null;
+        String join = null;
+        for (int i = 0; i < query.length(); i++) {
+            if (c == 0) {
+                if (query.charAt(i) == '(') {
+                    temp = i + 1;
+                } else if (query.charAt(i) == ')') {
+                    quer = query.substring(temp, i - 2);
+                    c++;
+                }
+            } else {
+                if (query.charAt(i) == '<') {
+                    temp = i + 1;
+                } else if (query.charAt(i) == '>') {
+                    join = query.substring(temp, i);
+                } else if (query.charAt(i) == '{') {
+                    temp = i + 1;
+                } else if (query.charAt(i) == '}') {
+                    if (join == null) {
+                        Yes.add(query.substring(temp, i));
+                    } else if (join.contains("AND")) {
+                        Yes.add(query.substring(temp, i));
+                    } else if (join.contains("NOT")) {
+                        No.add(query.substring(temp, i));
+                    }
+                }
 
             }
         }
+        Q_SearchingComplexs(Q, quer, Yes, No);
+    }
 
+    public void Q_SearchingComplexs(Graphs Q, String info, ArrayList<String> yes, ArrayList<String> no) {
+        ArrayList<Node> Match = new ArrayList<>();
+        ArrayList<Node> MatchFix = new ArrayList<>();
+        int temp = 0;
+        for (Node n : Q.getNode()) {
+            if (n.getLabel().contains(info)) {
+                Match.add(n);
+            }
+        }
+
+        for (Node m : Match) {
+            temp = 0;
+            for (String s : yes) {
+                for (Edge e : m.getArrayEdge()) {
+                    if (s.contains(e.getNode().getInfo())) {
+                        temp++;
+                    }
+                }
+            }
+            if ((temp) == yes.size()) {
+                MatchFix.add(m);
+            }
+        }
+
+        Match.clear();
+        for (Node m : MatchFix) {
+            temp = 0;
+            for (String s : no) {
+                for (Edge e : m.getArrayEdge()) {
+                    if (s.contains(e.getNode().getInfo())) {
+                        temp++;
+                    }
+                }
+            }
+            if (temp == 0) {
+                Match.add(m);
+            }
+        }
+        MatchFix.clear();
+
+        Graphs Y = new Graphs();
+        String s = "";
+        for (Node m : Match) {
+            Y.addNode(m);
+            s += m.toString() + "\n";
+        }
+        Gstream = new Convert(Y);
+        Gstream.Run();
+        View view = Gstream.displayG("");
+        frame.add(view);
+        frame.show();
+        jTextArea2.setText(s);
+    }
+
+    public void Q_MatchRelasi(Graphs Q, String query) {
+        int temp = 0;
+        Node n = null;
+        Graphs E = new Graphs();
+        for (int i = 0; i < query.length(); i++) {
+            if (query.charAt(i) == '{') {
+                temp = i + 1;
+            } else if (query.charAt(i) == '}') {
+                if (Q.cariNode(query.substring(temp, i)) != null) {
+                    n = Q.cariNode(query.substring(temp, i));
+                    if (n != null) {
+                        Node f = new Node(n.getInfo());
+                        f.Attribut(n.to_attribut());
+                        E.addNode(f);
+                        for (Edge e : n.getArrayEdge()) {
+                            Node h = new Node(e.getNode().getInfo());
+                            h.Attribut(e.getNode().to_attribut());
+                            E.addNode(h);
+                            E.addEdge(e.getInfo(), f.getInfo(), h.getInfo());
+                        }
+                        Gstream = new Convert(E);
+                        Gstream.run();
+                        View view = Gstream.displayG("");
+                        frame.add(view);
+                        frame.show();
+                        jTextArea2.setText(n.getInfo());
+                    }
+                } else {
+                    jTextArea2.setText("not Found");
+                }
+            }
+        }
+    }
+
+    public void Q_CreateNode(Graphs Q, String query) {
+        int temp = 0;
+        ArrayList<String> attribut = new ArrayList<>();
+        String a = "";
+        //parsing untuk mendapat attribut node, masukkan ke attribut
+        for (int i = 0; i < query.length(); i++) {
+            if (query.charAt(i) == '{') {
+                temp = i + 1;
+            } else if (query.charAt(i) == '}') {
+                attribut.add(query.substring(temp, i));
+            }
+        }
+        //insert node baru dari array attribut
+        for (String att : attribut) {
+            Node o = new Node(att);
+            Q.addNode(o);
+            a += o.getInfo() + " \n";
+        }
+        Gstream = new Convert(Q);
+        Gstream.run();
+        View view = Gstream.displayG("");
+        frame.add(view);
+        frame.show();
+        jTextArea2.setText("Insert Sukses : \n " + a);
+    }
+
+    public void Q_CreateEdge(Graphs Q, String query) {
+        ArrayList<String> attribut = new ArrayList<>();
+        ArrayList<String> info = new ArrayList<>();
+        int temp = 0, t = 0;
+        for (int i = 0; i < query.length(); i++) {
+            if (query.charAt(i) == '{') {
+                temp = i + 1;
+            } else if (query.charAt(i) == '}') {
+                if (t == 0) {
+                    attribut.add(query.substring(temp, i));
+                    t++;
+                } else {
+                    attribut.add(query.substring(temp, i));
+                    t--;
+                }
+            } else if (query.charAt(i) == '[') {
+                temp = i + 1;
+            } else if (query.charAt(i) == ']') {
+                info.add(query.substring(temp, i));
+            }
+        }
+        Node a = null, b = null;
+        String tt = "";
+        for (int j = 0; j < attribut.size(); j++) {
+            if ((j + 1) % 2 != 0) {
+                a = Q.cariNode(attribut.get(j));
+                System.out.println(a.getInfo());
+            } else if ((j + 1) % 2 == 0) {
+                b = Q.cariNode(attribut.get(j));
+                if (a != null && b != null) {
+                    String inf = info.get(0);
+                    Q.addEdge(inf, a.getInfo(), b.getInfo());
+                    tt += "create ke-" + (j - 1) + " sukses ";
+                } else {
+                    tt += "create ke-" + (j - 1) + "tidak ditemukan";
+                }
+                if (info.size() >= 0) {
+                    info.remove(0);
+                }
+            }
+
+        }
+        jTextArea2.setText(tt);
+        Q_viewAll(Q);
+    }
+
+    public void Q_Open(Graphs Q) {
+        try {
+            id = new ImportDataset(jTextArea1.getText().substring(5));
+        } catch (IOException ex) {
+            Logger.getLogger(Design.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (BiffException ex) {
+            Logger.getLogger(Design.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        id.Run(Q);
+        Q_viewAll(Q);
+    }
+
+    public void Q_viewAll(Graphs Q) {
+        Gstream = new Convert(Q);
+        Gstream.run();
+        View view = Gstream.displayG("");
+        frame.add(view);
+        frame.show();
+        jTextArea2.setText(Q.view());
     }
 
     public void reset() {
