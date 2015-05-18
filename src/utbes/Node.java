@@ -131,5 +131,15 @@ public class Node {
             }
         }
     }
+     public String to_attribut(){
+        String a="";
+        for (String n: Attribut){
+            a+=n+", ";
+        }
+        return a;
+    }
+  public void Attribut(String att) {
+        setAttribut(att);
+    }
 
 }
