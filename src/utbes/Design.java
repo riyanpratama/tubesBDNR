@@ -681,13 +681,24 @@ public class Design extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        String S = "*) insert Node => create node(aktor a{nama: Lee Min ho}) \n"
-                + "Insert edge => create edge (aktor b where {nama: Lee Min ho})-[peran:pembantu]-(movie c where {judul= Full House})  \n"
-                + "Cari posisi node=> match (aktor b) where {nama: Lee Min Ho} return b \n"
-                + "Cari node label=> match (aktor b) return b \n"
-                + "Cari node dan relasi=> match (aktor b) where {nama: Lee Min Ho} return b,- \n"
-                + "Open C:\\Users\\Dion Tanjung\\Documents\\datasetmovie.xls";
-        jTextArea4.setText(S);
+      String S = "=>view semua graph \n "
+                + "return all \n\n"
+                + "=>insert node\n"
+                + "create node(aktor a{nama: Lee Po})\n\n"
+                + "=>insert edge\n"
+                + "create edge (aktor b where {nama: Lee})-[peran:pembantu]-(aktor c where {nama: Lee P})\n\n"
+                + "=>cari posisi node \n"
+                + "match (aktor b) where {nama: Lee Pil Mo} return b \n\n"
+                + "=>cari node dan relasinya (kedalaman 1)\n"
+                + "match (aktor b) -[:peran]= movie m) where {nama: Lee Pil Mo} return b,m \n\n"
+                + "=>cari berdasarkan label\n"
+                + "match (aktor b) return b\n\n"
+                + "=>complex\n"
+                + "match (movie m)  where -[played]- (aktor b{nama: Lee Min Ho}) <AND> -[played]- (aktor s{nama: Chun Ho Jin}) \n\n"
+                + "=>kedalaman 2\n"
+                + "match (aktor b{nama: Bi}) -[:peran]-> (movie m{judul: Full House}) AND (movie m) -[:peran]-> (aktor b{nama: Lee Min Ho}) return \n\n";
+        jTextArea2.setText(S);
+        jTextArea2.enable();
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
