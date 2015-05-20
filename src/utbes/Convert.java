@@ -21,6 +21,8 @@ import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.stream.file.FileSourceDGS;
 import org.graphstream.stream.file.FileSourceDGS;
+import org.graphstream.ui.swingViewer.View;
+import org.graphstream.ui.swingViewer.Viewer;
 
 /**
  *
@@ -28,7 +30,7 @@ import org.graphstream.stream.file.FileSourceDGS;
  */
 public class Convert {
 
-     Graph Gstream = null;
+    Graph Gstream = null;
     Graphs G;
     private String styleSheet = "node { fill-color : black;}node.marked {fill-color:red;}";
     private String betweness;
@@ -97,6 +99,23 @@ public class Convert {
             n.addAttribute("ui.label", n.getId());
         }
     }
+    public void D_Director() {
+        for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
+            n.addAttribute("ui.hide");
+            for (org.graphstream.graph.Edge e : n.getEachEdge()) {
+                e.addAttribute("ui.hide");
+            }
+            for (Node i : G.getNode()) {
+                if (i.getLabel().contains("director")) {
+                    if (i.getInfo().contains(n.getId())) {
+                        n.removeAttribute("ui.hide");
+                        n.addAttribute("ui.style", "fill-color:rgb(0,255,0);");
+                    }
+                }
+            }
+            n.addAttribute("ui.label", n.getId());
+        }
+    }
 
     public void D_Movie() {
         for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
@@ -120,14 +139,17 @@ public class Convert {
     public void D_Highlight(String ceklis) {
         for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
             for (Node i : G.getNode()) {
-                if (i.getLabel().contains("aktor")) {
+                  if (i.getLabel().contains("aktor")) {
                     if (i.getInfo().contains(n.getId())) {
                         n.addAttribute("ui.style", "fill-color:rgb(0,188,200);");
                     }
-                }
-                if (i.getInfo().contains(ceklis.substring(10))) {
+                } else if (i.getLabel().contains("movie")) {
                     if (i.getInfo().contains(n.getId())) {
-                        n.addAttribute("ui.style", "fill-color:rgb(250,0,0);");
+                        n.addAttribute("ui.style", "fill-color:rgb(255,0,0);");
+                    }
+                }else{
+                    if (i.getInfo().contains(n.getId())) {
+                        n.addAttribute("ui.style", "fill-color:rgb(0,255,0);");
                     }
                 }
             }
@@ -142,23 +164,37 @@ public class Convert {
                     if (i.getInfo().contains(n.getId())) {
                         n.addAttribute("ui.style", "fill-color:rgb(0,188,200);");
                     }
+                } else if (i.getLabel().contains("movie")) {
+                    if (i.getInfo().contains(n.getId())) {
+                        n.addAttribute("ui.style", "fill-color:rgb(255,0,0);");
+                    }
+                }else{
+                    if (i.getInfo().contains(n.getId())) {
+                        n.addAttribute("ui.style", "fill-color:rgb(0,255,0);");
+                    }
                 }
             }
             n.addAttribute("ui.label", n.getId());
+//            for(org.graphstream.graph.Edge e: n.getEachEdge()) {
+//                e.addAttribute("ui.label", e.getId());
+//            }
         }
     }
 
     public void D_Relasi(String info){
           for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
             for (Node i : G.getNode()) {
-                if (i.getLabel().contains("aktor")) {
+                 if (i.getLabel().contains("aktor")) {
                     if (i.getInfo().contains(n.getId())) {
                         n.addAttribute("ui.style", "fill-color:rgb(0,188,200);");
                     }
-                }
-                if (i.getInfo().contains(info.substring(10))) {
+                } else if (i.getLabel().contains("movie")) {
                     if (i.getInfo().contains(n.getId())) {
-                        n.addAttribute("ui.style", "fill-color:rgb(250,0,0);");
+                        n.addAttribute("ui.style", "fill-color:rgb(255,0,0);");
+                    }
+                }else{
+                    if (i.getInfo().contains(n.getId())) {
+                        n.addAttribute("ui.style", "fill-color:rgb(0,255,0);");
                     }
                 }
             }
@@ -171,7 +207,9 @@ public class Convert {
             D_Aktor();
         } else if (ceklis.contains("movie")) {
             D_Movie();
-        } else if (ceklis.contains("highlight")) {
+        }else if (ceklis.contains("director")) {
+            D_Director();
+        }else if (ceklis.contains("highlight")) {
             D_Highlight(ceklis);
         } else if (ceklis.contains("-")) {
             D_Relasi(ceklis.substring(1));
@@ -262,6 +300,5 @@ public class Convert {
     public double getDIameter() {
         return Toolkit.diameter(Gstream);
     }
-
 
 }
