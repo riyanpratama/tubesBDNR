@@ -120,12 +120,12 @@ public class Node {
             }
             if (attribut.charAt(i) == ',' || (i + 1) == attribut.length()) {
                 if (attribut.contains("judul")) {
-                    this.label = "movie";
-                } else if (attribut.contains("nama")) {
-                    this.label = "aktor";
-                } else {
-                    this.label = "unkown";
-                }
+                        this.label = "movie";
+                    } else if (attribut.contains("nama") && !attribut.contains("pekerjaan")) {
+                        this.label = "aktor";
+                    } else if (attribut.contains("pekerjaan")){
+                        this.label = "director";
+                    }
                 Attribut.add(attribut.substring(temp1, i));
                 temp1 = i;
             }
