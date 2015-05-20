@@ -199,6 +199,9 @@ public class Convert {
                     }
                 }
             }
+            for (org.graphstream.graph.Edge nn : n.getEachEdge()) {
+                nn.addAttribute("ui.label", nn.getId());
+            }
             n.addAttribute("ui.label", n.getId());
         }
     }
@@ -249,12 +252,12 @@ public class Convert {
                             if (ee.getInfo().contains(e.getInfo())) {
                                 if (nn.getId().contains(ee.getInfo())) {
                                     nn.addAttribute("ui.style", "fill-color:rgb(0,0,128); size:3px;");
-                                  
+                                    nn.addAttribute("ui.label", nn.getId());
                                 }
                             }
                         }
                     }
-                     nn.addAttribute("ui.label", nn.getId());
+
                 }
                 n.addAttribute("ui.label", n.getId());
             }
