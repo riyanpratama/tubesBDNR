@@ -1005,6 +1005,12 @@ public class Design extends javax.swing.JFrame {
                         frame.add(view);
                         frame.show();
 
+                    }else if (query.contains("director")) {
+                        Gstream = new Convert(Q);
+                        Gstream.run();
+                        View view = Gstream.displayG("director");
+                        frame.add(view);
+                        frame.show();
                     }
                 }
             } else if (query.contains("create edge")) {
