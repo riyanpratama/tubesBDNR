@@ -1087,7 +1087,7 @@ public class Design extends javax.swing.JFrame {
             }
             Gstream = new Convert(Y);
             Gstream.run();
-            View view = Gstream.displayG("");
+             View view = Gstream.displayD(infoEdge);
             frame.add(view);
             frame.show();
             jTextArea2.setText(Y.view());
