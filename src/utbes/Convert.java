@@ -99,6 +99,7 @@ public class Convert {
             n.addAttribute("ui.label", n.getId());
         }
     }
+
     public void D_Director() {
         for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
             n.addAttribute("ui.hide");
@@ -139,7 +140,7 @@ public class Convert {
     public void D_Highlight(String ceklis) {
         for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
             for (Node i : G.getNode()) {
-                  if (i.getLabel().contains("aktor")) {
+                if (i.getLabel().contains("aktor")) {
                     if (i.getInfo().contains(n.getId())) {
                         n.addAttribute("ui.style", "fill-color:rgb(0,188,200);");
                     }
@@ -147,7 +148,7 @@ public class Convert {
                     if (i.getInfo().contains(n.getId())) {
                         n.addAttribute("ui.style", "fill-color:rgb(255,0,0);");
                     }
-                }else{
+                } else {
                     if (i.getInfo().contains(n.getId())) {
                         n.addAttribute("ui.style", "fill-color:rgb(0,255,0);");
                     }
@@ -168,7 +169,7 @@ public class Convert {
                     if (i.getInfo().contains(n.getId())) {
                         n.addAttribute("ui.style", "fill-color:rgb(255,0,0);");
                     }
-                }else{
+                } else {
                     if (i.getInfo().contains(n.getId())) {
                         n.addAttribute("ui.style", "fill-color:rgb(0,255,0);");
                     }
@@ -181,10 +182,10 @@ public class Convert {
         }
     }
 
-    public void D_Relasi(String info){
-          for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
+    public void D_Relasi(String info) {
+        for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
             for (Node i : G.getNode()) {
-                 if (i.getLabel().contains("aktor")) {
+                if (i.getLabel().contains("aktor")) {
                     if (i.getInfo().contains(n.getId())) {
                         n.addAttribute("ui.style", "fill-color:rgb(0,188,200);");
                     }
@@ -192,7 +193,7 @@ public class Convert {
                     if (i.getInfo().contains(n.getId())) {
                         n.addAttribute("ui.style", "fill-color:rgb(255,0,0);");
                     }
-                }else{
+                } else {
                     if (i.getInfo().contains(n.getId())) {
                         n.addAttribute("ui.style", "fill-color:rgb(0,255,0);");
                     }
@@ -201,20 +202,62 @@ public class Convert {
             n.addAttribute("ui.label", n.getId());
         }
     }
-    
+
     public View displayG(String ceklis) {
         if (ceklis.contains("aktor")) {
             D_Aktor();
         } else if (ceklis.contains("movie")) {
             D_Movie();
-        }else if (ceklis.contains("director")) {
+        } else if (ceklis.contains("director")) {
             D_Director();
-        }else if (ceklis.contains("highlight")) {
+        } else if (ceklis.contains("highlight")) {
             D_Highlight(ceklis);
         } else if (ceklis.contains("-")) {
             D_Relasi(ceklis.substring(1));
         } else {
             D_All();
+        }
+
+        Viewer viewer = new Viewer(Gstream, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        viewer.enableAutoLayout();
+        View view = viewer.addDefaultView(false);
+        return view;
+    }
+
+    public View displayD(ArrayList<Edge> ceklis) {
+        for (org.graphstream.graph.Node n : Gstream.getEachNode()) {
+            for (Node i : G.getNode()) {
+                if (i.getLabel().contains("aktor")) {
+                    if (i.getInfo().contains(n.getId())) {
+                        n.addAttribute("ui.style", "fill-color:rgb(0,188,200);");
+                    }
+                } else if (i.getLabel().contains("movie")) {
+                    if (i.getInfo().contains(n.getId())) {
+                        n.addAttribute("ui.style", "fill-color:rgb(255,0,0);");
+                    }
+                } else {
+                    if (i.getInfo().contains(n.getId())) {
+                        n.addAttribute("ui.style", "fill-color:rgb(0,255,0);");
+                    }
+                }
+                for (org.graphstream.graph.Edge nn : n.getEachEdge()) {
+                    System.out.println(nn.getId());
+                    for (Edge ee : i.getArrayEdge()) {
+                        System.out.println(ee.getInfo());
+                        for (Edge e : ceklis) {
+                            System.out.println(e.getInfo());
+                            if (ee.getInfo().contains(e.getInfo())) {
+                                if (nn.getId().contains(ee.getInfo())) {
+                                    nn.addAttribute("ui.style", "fill-color:rgb(0,0,128); size:3px;");
+                                  
+                                }
+                            }
+                        }
+                    }
+                     nn.addAttribute("ui.label", nn.getId());
+                }
+                n.addAttribute("ui.label", n.getId());
+            }
         }
 
         Viewer viewer = new Viewer(Gstream, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
